@@ -1,0 +1,147 @@
+<html>
+    <head>
+        <script src="lib/vue.min.js"></script>
+        <style>
+body {
+    background-color: #fffad6;
+}
+
+h1 {
+    background-color:#3c60a8;
+    color:#fffad6;
+    padding:10px;
+
+}
+
+h2 {
+    background-color:#5b6b89;
+    color:#fff4a9;
+    padding:5px;
+}
+
+button {
+    background-color:#3c60a8;
+    min-width: 100px;
+    color:#ffffff;
+    padding:10px;
+    box-shadow: 3px 3px 5px #000000;
+}
+button.admin {
+    background-color:#e88364;
+    min-width: 100px;
+    color:#ffffff;
+    padding:10px;
+    position: absolute;
+    right: 20px;
+}
+button.menu {
+    background-color:#5a75aa;
+    min-width: 100px;
+    color:#ffffff;
+    padding:10px;
+    position: absolute;
+    right: 20px;
+}
+.a { 
+    width:200px;
+    background-color:#f0f0f5;
+    margin:1px;
+    padding:3px;
+	float: left;
+}            
+.b { 
+    width:80px;
+    background-color:#f0f0f5;
+    margin:1px;
+    padding:3px;
+	float: left;
+}            
+.c { 
+    width:80px;
+    background-color:f0f0f5;
+    margin:1px;
+    padding:3px;
+	float: left;
+}            
+.d { 
+    width:80px;
+    background-color:#fdfdfd;
+    margin:1px;
+    padding:3px;
+	float: left;
+}
+.e
+{
+    clear: both;
+    display: block;
+}            
+ul{
+    list-style: none                
+}
+</style>
+    </head>
+    <body>
+        <div id="app">
+            <div v-if="mode==0">
+                <ul>
+                    <li v-for="user in users">{{user.name}}
+                        <button @click="start(user.name)">Start</button>
+                        <button @click="end(user.name)">End</button>
+                        <period-overview :user="user.name" :period="lastPeriod"><period-overview>/>
+                    </li>
+                </ul>
+            </div>
+            <div v-if="mode==1">
+                <h1>Select user<button class="admin" @click="mode=5">Admin</button></h1>
+                <ul>
+                    <p v-for="user in users">
+                        <button @click="setUser(user)">{{user.name}}</button>
+                    </p>
+                </ul>                
+            </div>
+            <div v-if="mode==2">
+                <h1>{{user.name}} <button class="menu" @click="mode=1">Back</button></h1>
+                <div v-if="periodStatus!=1">
+                    <button @click="start(user.name)">Start</button>
+                </div>
+                <div v-else>                
+                    <button @click="end(user.name)">End</button>
+                </div>                
+                <div v-if="periodStatus==2">
+                    {{periodStatusMessage}}
+                </div>
+                <period-overview :user="user.name" :period="lastPeriod"><period-overview>/>
+            </div>
+            <div v-if="mode==3">
+                <h1>{{user.name}} started working</h1>
+                <button @click="mode=1">OK</button>
+                <period-overview :user="user.name" :period="lastPeriod"><period-overview>/>
+            </div>
+            <div v-if="mode==4">
+                <h1>{{user.name}} finished working</h1>
+                <button @click="mode=1">OK</button>
+                <period-overview :user="user.name" :period="lastPeriod"><period-overview>/>
+            </div>
+            <div v-if="mode==5">
+                <h1>Admin <button class="menu" @click="admin=0;mode=1">Back</button></h1>
+                <div v-if="isAdmin">
+                    <select v-model="user"><option v-for="u in users" :value="u">{{u.name}}</option></select>                    
+                    <h2>{{user.name}} - {{lastPeriod.month}}/{{lastPeriod.year}}</h2>
+                    <ul>
+                        <li v-for="r in lastPeriod.records[user.name]"><period-entry :entry="r" editable="true"></period-entry>
+                            <input v-model="r.hours"></input>
+                        </li>
+                    </ul>
+ 
+                    <textarea v-model="dataString" cols="80" rows="5"></textarea>
+                    <button @click="store()">Store</button>
+                </div>
+                <div v-else>
+                    <input type="password" v-model="adminpass" ></input>
+                    <button @click="adminLogin()">Login</button>
+                </div>                
+            </div>
+        </div>                
+        <script src="hours.js"></script>    
+    </body>
+</html>
