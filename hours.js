@@ -3,13 +3,13 @@ function getOriginalHours(entry){
     if (delta <= 0) {
         return 0;      
     }
-    return delta/1000/60/60;
+    return Math.floor(delta/1000/60)/60;
 }
 
 function getHours(entry){
     if (entry.hasOwnProperty("hours")){
         if (entry.hours!=""){
-            return parseFloat(entry.hours);
+            return Math.floor(parseFloat(entry.hours)*60)/60;
         }
     }
     return getOriginalHours(entry);
@@ -59,14 +59,20 @@ function formatTime(datems){
     }
     return d.getHours()+":"+m;
 }
+function formatHours(t){
+    var h=Math.floor(t);
+    var m=Math.floor(Math.floor((t-h)*60));
+    if (m<10){m="0"+m;}
+    return h+":"+m;
+}
 
 Vue.component('period-entry', {
     props:['entry'],
     template: '<div>\
 <div class="a">{{date}}</div>\
 <span class="b">{{startTime}}</span>\
-<span class="b"><span v-if="endTimeValid">{{endTime}}</span></span>&nbsp;\
-<span class="c"><span v-if="endTimeValid">{{originalHours}}</span></span>&nbsp;\
+<span class="b"><span v-if="endTimeValid">{{endTime}}</span><span v-else>-</span></span>\
+<span class="c"><span v-if="endTimeValid">{{originalHours}}</span><span v-else>-</span></span>\
 <span class="d">{{hours}}</span>\
 <span class="e"></span>\
 </div>',
@@ -86,10 +92,10 @@ Vue.component('period-entry', {
             return delta>0;
         },
         originalHours:function(){
-            return Math.round(getOriginalHours(this.entry));
+            return formatHours(getOriginalHours(this.entry));
         },
         hours:function(){
-            return Math.round(getHours(this.entry));
+            return formatHours(getHours(this.entry));
         }
     }
 });
@@ -102,7 +108,7 @@ Vue.component('period-overview', {
     <ul>\
         <li v-for="r in period.records[user]"><period-entry :entry="r" editable="true"></period-entry></li>\
     </ul>\
-    <h2>Total:&nbsp;&nbsp;{{Math.trunc(total)}}</h2>\
+    <h2>Total:&nbsp;&nbsp;{{formatHours(total)}}</h2>\
     </div>',
     computed:{
         total:function(){
@@ -197,6 +203,13 @@ var App = new Vue({
     computed:{
         lastPeriod:function(){
             return this.getLastPeriod();
+        },
+        previousPeriod:function(){
+            this.getLastPeriod();
+            if (this.periods.length <=1){
+                return this.getLastPeriod();
+            }
+            return this.periods[this.periods.length-2];
         },
         periodStatus:function(){
             return getPeriodStatus(this.getLastPeriod().records[this.user.name]);

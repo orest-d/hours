@@ -3,12 +3,12 @@
         <script src="lib/vue.min.js"></script>
         <style>
 body {
-    background-color: #fffad6;
+    background-color: #0E0E0E;
 }
 
 h1 {
-    background-color:#3c60a8;
-    color:#fffad6;
+    background-color:#3F3F3F;
+    color:#A4CAD6;
     padding:10px;
 
 }
@@ -18,13 +18,20 @@ h2 {
     color:#fff4a9;
     padding:5px;
 }
+h3 {
+    background-color:#0E0E0E;
+    color:#A4CAD6;
+    padding:5px;
+
+}
 
 button {
-    background-color:#3c60a8;
     min-width: 100px;
-    color:#ffffff;
-    padding:10px;
-    box-shadow: 3px 3px 5px #000000;
+    background-color: #3D3D3D;
+    color: #D7D9D0;
+    border: 1px solid #6D6D6D;
+    padding: 10px;
+    box-shadow: 1px 1px 8px #A9A9A9;    
 }
 button.admin {
     background-color:#e88364;
@@ -37,35 +44,39 @@ button.admin {
 button.menu {
     background-color:#5a75aa;
     min-width: 100px;
-    color:#ffffff;
+    border-color:#484C43;
     padding:10px;
     position: absolute;
     right: 20px;
 }
 .a { 
     width:200px;
-    background-color:#f0f0f5;
+    color:#ffffff;
+    background-color: #3A3A31;
     margin:1px;
     padding:3px;
 	float: left;
 }            
 .b { 
     width:80px;
-    background-color:#f0f0f5;
+    color:#ffffff;
+    background-color: #3A3A31;
     margin:1px;
     padding:3px;
 	float: left;
 }            
 .c { 
     width:80px;
-    background-color:f0f0f5;
+    color:#ffffff;
+    background-color: #3A3A31;
     margin:1px;
     padding:3px;
 	float: left;
 }            
 .d { 
     width:80px;
-    background-color:#fdfdfd;
+    color:#ffffff;
+    background-color: #273538;
     margin:1px;
     padding:3px;
 	float: left;
@@ -110,17 +121,20 @@ ul{
                 <div v-if="periodStatus==2">
                     {{periodStatusMessage}}
                 </div>
-                <period-overview :user="user.name" :period="lastPeriod"><period-overview>/>
+                <period-overview :user="user.name" :period="lastPeriod"></period-overview>
+                <br/>
+                <h3>Previous month</h3>
+                <period-overview :user="user.name" :period="previousPeriod"></period-overview>
             </div>
             <div v-if="mode==3">
                 <h1>{{user.name}} started working</h1>
                 <button @click="mode=1">OK</button>
-                <period-overview :user="user.name" :period="lastPeriod"><period-overview>/>
+                <period-overview :user="user.name" :period="lastPeriod"></period-overview>>
             </div>
             <div v-if="mode==4">
                 <h1>{{user.name}} finished working</h1>
                 <button @click="mode=1">OK</button>
-                <period-overview :user="user.name" :period="lastPeriod"><period-overview>/>
+                <period-overview :user="user.name" :period="lastPeriod"></period-overview>
             </div>
             <div v-if="mode==5">
                 <h1>Admin <button class="menu" @click="admin=0;mode=1">Back</button></h1>
